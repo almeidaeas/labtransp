@@ -52,14 +52,14 @@ def agrupamento_periodico(df):
                                         month=df.Mes,
                                         day=1)) + pd.offsets.MonthEnd()    
     
-    df_subpref = df[['Sub_Prefeitura', 'Volume_Passageiros (BU + VT + DIN)', 'Periodo']]
+    df_subpref = df[['Sub_Prefeitura', 'Volume_Passageiros_BU_VT_DIN', 'Periodo']]
     df_subpref.drop_duplicates(inplace=True, ignore_index=True)    
-    df_subpref = df_subpref.groupby(['Periodo', 'Sub_Prefeitura'], as_index=False).agg({'Volume_Passageiros (BU + VT + DIN)':"sum"}).reset_index(drop=True)
+    df_subpref = df_subpref.groupby(['Periodo', 'Sub_Prefeitura'], as_index=False).agg({'Volume_Passageiros_BU_VT_DIN':"sum"}).reset_index(drop=True)
     
     
-    df_zonas = df[['Zona', 'Volume_Passageiros (BU + VT + DIN)', 'Periodo']]
+    df_zonas = df[['Zona', 'Volume_Passageiros_BU_VT_DIN', 'Periodo']]
     df_zonas.drop_duplicates(inplace=True, ignore_index=True)    
-    df_zonas = df_zonas.groupby(['Periodo', 'Zona'], as_index=False).agg({'Volume_Passageiros (BU + VT + DIN)':"sum"}).reset_index(drop=True)    
+    df_zonas = df_zonas.groupby(['Periodo', 'Zona'], as_index=False).agg({'Volume_Passageiros_BU_VT_DIN':"sum"}).reset_index(drop=True)    
     
     return df_subpref, df_zonas
 
@@ -81,10 +81,10 @@ def ajuste_datas_historica(df, coluna, param):
     print("O intevalo corresponde a " + str(len(Serie["Periodo"])), " datas")
 
     #Criação da Série histórica
-    Serie_Historica = Serie.merge(df[['Periodo','Volume_Passageiros (BU + VT + DIN)']], 
+    Serie_Historica = Serie.merge(df[['Periodo','Volume_Passageiros_BU_VT_DIN']], 
                                   on="Periodo", 
                                   how="left")
-    Serie_Historica["Volume_Passageiros (BU + VT + DIN)"] = Serie_Historica["Volume_Passageiros (BU + VT + DIN)"].fillna(0)
+    Serie_Historica["Volume_Passageiros (BU + VT + DIN)"] = Serie_Historica["Volume_Passageiros_BU_VT_DIN"].fillna(0)
     
     
     Serie_Treinamento = Serie_Historica[Serie_Historica["Periodo"] < data_corte_treinamento]
@@ -103,10 +103,10 @@ def ajuste_datas_historica(df, coluna, param):
     return Serie_Historica, Serie_Treinamento, Serie_Teste
 
 def conversao_array(df_historico, df_treinamento, df_teste):
-    y = df_historico['Volume_Passageiros (BU + VT + DIN)']
-    y_treinamento = df_treinamento['Volume_Passageiros (BU + VT + DIN)']
-    y_teste = df_teste['Volume_Passageiros (BU + VT + DIN)']
-    y_treinamento_exp = df_treinamento['Volume_Passageiros (BU + VT + DIN)'].pow(2)
+    y = df_historico['Volume_Passageiros_BU_VT_DIN']
+    y_treinamento = df_treinamento['Volume_Passageiros_BU_VT_DIN']
+    y_teste = df_teste['Volume_Passageiros_BU_VT_DIN']
+    y_treinamento_exp = df_treinamento['Volume_Passageiros_BU_VT_DIN'].pow(2)
     
     return y, y_treinamento, y_teste, y_treinamento_exp
 
