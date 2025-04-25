@@ -61,7 +61,12 @@ def agrupamento_periodico(df):
     df_zonas.drop_duplicates(inplace=True, ignore_index=True)    
     df_zonas = df_zonas.groupby(['Periodo', 'Zona'], as_index=False).agg({'Volume_Passageiros_BU_VT_DIN':"sum"}).reset_index(drop=True)    
     
-    return df_subpref, df_zonas
+    
+    df_total = df[['Cidade', 'Volume_Passageiros_BU_VT_DIN', 'Periodo']]
+    df_total.drop_duplicates(inplace=True, ignore_index=True)    
+    df_total = df_total.groupby(['Periodo', 'Cidade'], as_index=False).agg({'Volume_Passageiros_BU_VT_DIN':"sum"}).reset_index(drop=True)        
+    
+    return df_subpref, df_zonas, df_total
 
 def ajuste_datas_historica(df, coluna, param):
     #Normalização das Datas
